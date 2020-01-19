@@ -6,6 +6,7 @@
 
 import javax.swing.SwingUtilities;
 
+/** Entry point into the application*/
 public class RunApplication implements Runnable {
 
     public void run() {
