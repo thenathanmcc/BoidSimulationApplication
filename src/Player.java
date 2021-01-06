@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Player {
     private double x_coordinate;
@@ -7,9 +8,13 @@ public class Player {
     private double player_height;
     private Polygon original_player_polygon; // Need to store original polygon for rotation
     private Polygon current_player_polygon;
+    private ArrayList<Polygon> playerPolys = new ArrayList<Polygon>();
+    private ArrayList<Polygon> originalPlayerPolys = new ArrayList<Polygon>();
     private double speed = 4;
     private Vec2 current_player_direction = new Vec2(0.0, 1.0);
     private final Vec2 initial_player_direction = new Vec2(0.0, 1.0);
+    private Gun playerGun;
+    private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 
     public Player(double x_coordinate, double y_coordinate, double height, double width){
@@ -31,6 +36,19 @@ public class Player {
         original_player_polygon.addPoint((int)(x_coordinate + width), (int)(y_coordinate + height));
         original_player_polygon.addPoint((int)x_coordinate, (int)(y_coordinate + height));
 
+
+        playerGun = new Gun(x_coordinate, y_coordinate, getCentreX(), getCentreY());
+
+        playerPolys.add(current_player_polygon);
+        playerPolys.add(playerGun);
+
+        originalPlayerPolys.add(original_player_polygon);
+        originalPlayerPolys.add(playerGun.getOriginalPolygon());
+
+        for (Polygon poly : originalPlayerPolys) {
+            poly.translate(-(int)getCentreX(), -(int)getCentreY());
+        }
+
     }
 
     /**
@@ -40,6 +58,8 @@ public class Player {
     public void display(Graphics g) {
         g.setColor(Color.black);
         g.fillPolygon(current_player_polygon);
+        g.setColor(Color.gray);
+        g.fillPolygon(playerGun);
     }
 
     public Vec2 getInitialPlayerDirection() {
@@ -98,28 +118,36 @@ public class Player {
      * Move the player up the screen
      */
     public void moveUp() {
-        current_player_polygon.translate(0, (int) -speed);
+        for (Polygon poly : playerPolys) {
+            poly.translate(0, (int) -speed);
+        }
     }
 
     /**
      * Move the player down the screen
      */
     public void moveDown() {
-        current_player_polygon.translate(0, (int) speed);
+        for (Polygon poly : playerPolys) {
+            poly.translate(0, (int) speed);
+        }
     }
 
     /**
      * Move the player right along the screen
      */
     public void moveRight() {
-        current_player_polygon.translate((int)speed, 0);
+        for (Polygon poly : playerPolys) {
+            poly.translate((int)speed, 0);
+        }
     }
 
     /**
      * Move the player left along the screen
      */
     public void moveLeft() {
-        current_player_polygon.translate((int) -speed, 0);
+        for (Polygon poly : playerPolys) {
+            poly.translate((int) -speed, 0);
+        }
     }
 
     /**
@@ -137,20 +165,51 @@ public class Player {
 
         current_player_direction.setX(previous_x_coordinate * cosTheta - previous_y_coordinate * sinTheta);
         current_player_direction.setY(previous_x_coordinate * sinTheta + previous_y_coordinate * cosTheta);
+        current_player_direction.normalize();
 
         int previous_centroid_x = (int) getCentreX();
         int previous_centroid_y = (int) getCentreY();
 
-        //Translate player polygon to origin before rotating
-        current_player_polygon.translate(-previous_centroid_x, -previous_centroid_y);
-        for (int i = 0; i < current_player_polygon.xpoints.length ; i++) {
-            previous_x_coordinate = original_player_polygon.xpoints[i];
-            previous_y_coordinate = original_player_polygon.ypoints[i];
-            current_player_polygon.xpoints[i] = (int) (previous_x_coordinate * cosTheta - previous_y_coordinate * sinTheta);
-            current_player_polygon.ypoints[i] = (int) (previous_x_coordinate * sinTheta + previous_y_coordinate * cosTheta);
+        
+        for (Polygon poly : playerPolys) {
+            //Translate the polygon to origin before rotating
+            poly.translate(-previous_centroid_x, -previous_centroid_y);
+
+            for (int i = 0; i < poly.xpoints.length ; i++) {
+                if (poly == current_player_polygon) {
+                    previous_x_coordinate = original_player_polygon.xpoints[i];
+                    previous_y_coordinate = original_player_polygon.ypoints[i];
+                    poly.xpoints[i] = (int) (previous_x_coordinate * cosTheta - previous_y_coordinate * sinTheta);
+                    poly.ypoints[i] = (int) (previous_x_coordinate * sinTheta + previous_y_coordinate * cosTheta);
+                } else if (poly == playerGun) {
+                    previous_x_coordinate = playerGun.getOriginalPolygon().xpoints[i];
+                    previous_y_coordinate = playerGun.getOriginalPolygon().ypoints[i];
+                    poly.xpoints[i] = (int)(previous_x_coordinate * cosTheta - previous_y_coordinate * sinTheta);
+                    poly.ypoints[i] = (int)(previous_x_coordinate * sinTheta + previous_y_coordinate * cosTheta);
+                }
+            }
+            poly.translate(previous_centroid_x, previous_centroid_y);
         }
-        //Translate player polygon back to original point
-        current_player_polygon.translate(previous_centroid_x, previous_centroid_y);
+    }
+
+    /**
+     * Fire the players gun by creating a new projectile traveling in the
+     * direction the player is facing
+     */
+    public void fireGun(Vec2 vec) {
+        if (projectiles.size() <= 50) {
+            projectiles.add(new Projectile(vec, playerGun.getCentreX() + player_width/2.0, playerGun.getCentreY() - player_height/2.0));
+        } else {
+            projectiles.remove(0);
+            projectiles.add(new Projectile(vec, playerGun.getCentreX(), playerGun.getCentreY()));
+        }
+    }
+
+    /**
+     * @return All the projectiles currently in play
+     */
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
     }
 
 

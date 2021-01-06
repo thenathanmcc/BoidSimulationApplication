@@ -1,5 +1,5 @@
 import java.awt.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -10,17 +10,17 @@ import java.util.Random;
 
 
 public class Boid {
-    private Vec2 location;
+    public Vec2 location;
     private Vec2 velocity;
     private Vec2 acceleration;
-    private double radius; // radius of the boid when drawn
+    public double radius; // radius of the boid when drawn
     private double maxForce;
     private double maxSpeed;
     private Player player;
-    private boolean dead = false;
+    public boolean dead = false;
     private Random generator = new Random(); // used for generating random numbers
 
-    public Boid(double x, double y) {
+    public Boid(double x, double y, Player player) {
         this.acceleration = new Vec2(0, 0);
         double angle = generator.nextDouble();
         velocity = new Vec2(Math.cos(angle), Math.sin(angle));
@@ -28,13 +28,22 @@ public class Boid {
         radius = 10.0;
         maxSpeed = 2;
         maxForce = 0.03;
+
+        this.player = player;
+    }
+
+    /**
+     * Set the boid to dead i.e boid no longer in play
+     */
+    public void setDead(){
+        dead = true;
     }
 
     /**
      * Runs the boid simulation
      * @param boids list of boids
      */
-    public void run(LinkedList<Boid> boids){
+    public void run(ArrayList<Boid> boids){
         flock(boids);
         update();
     }
@@ -51,7 +60,7 @@ public class Boid {
      * Applies the flocking algorithm to the Boid
      * @param boids lis of all boids in the simulation
      */
-    public void flock(LinkedList<Boid> boids) {
+    public void flock(ArrayList<Boid> boids) {
         Vec2 sep = separate(boids);
         Vec2 ali = align(boids);
         Vec2 coh = cohesion(boids);
@@ -103,7 +112,7 @@ public class Boid {
      * @param boids List of the boids in the simulation
      * @return separation vector
      */
-    public Vec2 separate(LinkedList<Boid> boids) {
+    public Vec2 separate(ArrayList<Boid> boids) {
         double desired_separation = 25.0;
         Vec2 steer = new Vec2(0,0);
         double dist = 0.0;
@@ -139,7 +148,7 @@ public class Boid {
      * @param boids list of other boids
      * @return alignment vector
      */
-    public Vec2 align(LinkedList<Boid> boids){
+    public Vec2 align(ArrayList<Boid> boids){
         double neighbour_distance = 50; //
         Vec2 sum = new Vec2(0.0, 0.0);
         int count = 0;
@@ -169,7 +178,7 @@ public class Boid {
      * @param boids list of boids
      * @return cohesion vector
      */
-    public Vec2 cohesion(LinkedList<Boid> boids) {
+    public Vec2 cohesion(ArrayList<Boid> boids) {
         double neighbour_distance = 50;
         Vec2 sum = new Vec2(0, 0);
         int count = 0;

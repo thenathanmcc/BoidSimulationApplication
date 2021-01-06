@@ -1,5 +1,5 @@
 import java.awt.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /** Flock class
  * @author Nathan McCulloch
@@ -7,10 +7,10 @@ import java.util.LinkedList;
 
 
 public class Flock {
-    private LinkedList<Boid> boids;
+    private ArrayList<Boid> boids;
 
     public Flock() {
-        boids = new LinkedList<>();
+        boids = new ArrayList<>();
     }
 
     /**
@@ -44,7 +44,7 @@ public class Flock {
      * Fetch list of boids currently in the simulation
      * @return linked list of boids
      */
-    public LinkedList<Boid> getBoids() {
+    public ArrayList<Boid> getBoids() {
         return boids;
     }
 }
