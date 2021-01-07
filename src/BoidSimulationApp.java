@@ -99,6 +99,7 @@ public class BoidSimulationApp{
             newPlayerDirection = currentPlayerPoint.subVec(currentMousePoint);
             //System.out.println("New Player Direction: " + newPlayerDirection);
             theta = player.getCurrentPlayerDirection().angleBetweenVec(newPlayerDirection);
+            newPlayerDirection.normalize();
             player.rotate(theta);
         }
 

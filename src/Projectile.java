@@ -11,8 +11,8 @@ public class Projectile extends Polygon {
     private double width = 4;
     private double length = 4;
     private Vec2 projectilePoints = new Vec2();
-    private double speedX = 1.0;
-    private double speedY = 1.0;
+    private double speedX = 5.0;
+    private double speedY = 5.0;
     protected Vec2 directionVector;
     private boolean dead = false;
 
@@ -23,7 +23,7 @@ public class Projectile extends Polygon {
     public Projectile(Vec2 directionVector, double x, double y) {
         //System.out.println("Projectile Direction Vector: " + directionVector);
         this.directionVector = directionVector;
-        this.directionVector.scaleVec(-0.05);
+        this.directionVector.scaleVec(-1.0);
         this.speedX *= this.directionVector.getX();
         this.speedY *= this.directionVector.getY();
         this.x = x;

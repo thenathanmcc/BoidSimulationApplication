@@ -23,5 +23,3 @@ Press the B key to add boids, WASD to control character movement, and Mouse to c
 ### Known Bugs
 
 - Sometimes the projectiles pass right through the boids.
-
-- Sometimes the projectiles spawn with different speeds
