@@ -97,6 +97,7 @@ public class BoidSimulationApp{
             currentPlayerPoint.setX((player.getCentreX() + gameFrame.getLocation().getX()));
             currentPlayerPoint.setY((player.getCentreY() + gameFrame.getLocation().getY()));
             newPlayerDirection = currentPlayerPoint.subVec(currentMousePoint);
+            //System.out.println("New Player Direction: " + newPlayerDirection);
             theta = player.getCurrentPlayerDirection().angleBetweenVec(newPlayerDirection);
             player.rotate(theta);
         }
@@ -108,6 +109,7 @@ public class BoidSimulationApp{
         public void updateNPO() {
             ArrayList<Projectile> projectiles = player.getProjectiles();
             ArrayList<Boid> boids = flock.getBoids();
+            //System.out.println(projectiles.size());
 
             for (int i = 0; i < projectiles.size(); i++) {
                 projectiles.get(i).move();
@@ -144,7 +146,7 @@ public class BoidSimulationApp{
             Iterator boidsIter = boids.iterator();
             while (projectilesIter.hasNext()) {
                 Projectile projectile = (Projectile) projectilesIter.next();
-                if (projectile.dead) {
+                if (projectile.isDead()) {
                     projectilesIter.remove();
                 }
             }

@@ -72,6 +72,10 @@ public class Boid {
         applyForce(sep);
         applyForce(ali);
         applyForce(coh);
+
+        Vec2 seekPlayerVec = seek(new Vec2(player.getCentreX(), player.getCentreY()));
+        seekPlayerVec.scaleVec(6.0);
+        applyForce(seekPlayerVec);
     }
 
     /**
@@ -90,6 +94,7 @@ public class Boid {
         velocity = velocity.addVec(acceleration);
         velocity.limit(maxSpeed);
         location = location.addVec(velocity);
+        acceleration.scaleVec(0.0);
     }
 
     /**

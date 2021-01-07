@@ -8,21 +8,22 @@ import java.awt.*;
 public class Projectile extends Polygon {
     private double x;
     private double y;
-    private double width = 2;
-    private double length = 2;
+    private double width = 4;
+    private double length = 4;
     private Vec2 projectilePoints = new Vec2();
     private double speedX = 1.0;
     private double speedY = 1.0;
     protected Vec2 directionVector;
-    protected boolean dead = false;
+    private boolean dead = false;
 
     public Projectile() {
 
     }
 
     public Projectile(Vec2 directionVector, double x, double y) {
+        //System.out.println("Projectile Direction Vector: " + directionVector);
         this.directionVector = directionVector;
-        this.directionVector.scaleVec(-4.0);
+        this.directionVector.scaleVec(-0.05);
         this.speedX *= this.directionVector.getX();
         this.speedY *= this.directionVector.getY();
         this.x = x;
@@ -49,6 +50,13 @@ public class Projectile extends Polygon {
      */
     public void move(){
         this.translate((int) speedX, (int) speedY);
+    }
+
+    /**
+     * @return boolean indicating whether or not the projectile is still in play
+     */
+    public Boolean isDead() {
+        return dead;
     }
 
     /**

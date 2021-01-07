@@ -197,7 +197,7 @@ public class Player {
      * direction the player is facing
      */
     public void fireGun(Vec2 vec) {
-        if (projectiles.size() <= 50) {
+        if (projectiles.size() < 50) {
             projectiles.add(new Projectile(vec, playerGun.getCentreX() + player_width/2.0, playerGun.getCentreY() - player_height/2.0));
         } else {
             projectiles.remove(0);
